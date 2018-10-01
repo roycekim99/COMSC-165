@@ -1,0 +1,5 @@
+﻿  Functions.cpp
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\2.loops & functions\b. functions\functions\functions\functions.cpp(8): warning C4101: 'remainder': unreferenced local variable
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\2.loops & functions\b. functions\functions\functions\functions.cpp(24): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\2.loops & functions\b. functions\functions\functions\functions.cpp(79): warning C4018: '<': signed/unsigned mismatch
+  Functions.vcxproj -> C:\Users\Cheeto\Documents\1 CODES\DVC\COMSC-165\2.Loops & Functions\b. Functions\Functions\Debug\Functions.exe

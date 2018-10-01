@@ -1,0 +1,6 @@
+﻿  Main.cpp
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(41): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(108): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(133): warning C4018: '<=': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(130): warning C4101: 'seatChar': unreferenced local variable
+  Movie Theater.vcxproj -> C:\Users\Cheeto\Documents\1 CODES\DVC\COMSC-165\3.Files and Arrays\Movie Theater\Debug\Movie Theater.exe
