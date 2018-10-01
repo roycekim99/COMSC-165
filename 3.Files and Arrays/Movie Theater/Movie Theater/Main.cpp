@@ -187,7 +187,8 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
         case 1: //buy a single seat
             cout << "Enter seat in R#S# format (ie. R10S25): ";
             getline(cin, userInput);
-
+            //TODO: validate user inputs. Catch inputs like "V10K200P"
+            
             buySeat(theater, seats, ticketsSold, userInput);
             save(theater, fileName);
             break;
@@ -272,6 +273,7 @@ int main() {
             userCommand = 1;
             break;
         case 2:
+            //TODO: Settings menu (by wednesday)
             break;
         case 3:
             display(theater, seatsMax);
