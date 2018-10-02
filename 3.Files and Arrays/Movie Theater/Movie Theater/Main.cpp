@@ -22,6 +22,14 @@ void clearTheater(vector<string> &chosen_vector) {
     chosen_vector.clear();
 }
 
+void countTix(const vector<string> &theater, int &ticketCount) {
+    for (string row : theater) {
+        for (char seat : row) {
+            ticketCount += seat == '*';
+        }
+    }
+}
+
 void display(vector<string>& vect, int seatSize) {
     string firstLine = "";
     string temp;
@@ -136,30 +144,41 @@ bool seatIsThere(const vector<string> &originRows, int originSeats, int inRows, 
     return isAvailable;
 }
 
+bool strIsNum(const string &checkStr) { //check if input is number
+   return checkStr.find_first_not_of("0123456789") == string::npos;
+}
+
 void buySeat(vector<string> &seatings, int maxSeats, int &ticketsSold, const string &userInput, int numberOfSeats = 1) { //replace # with *
     int sPos = 0;
     int seatNum;
     int rowNum;
     stringstream ss;
     string seatChars = "";
+    string seatString = userInput.substr(sPos + 1, userInput.size() - sPos);
+    string rowString = userInput.substr(1, sPos - 1);
 
     for (int i = 0; i < numberOfSeats; i++) {
         seatChars += "*";
     }
 
-    sPos = userInput.find("S");
-    ss << userInput.substr(1, sPos - 1); //find row
-    ss >> rowNum;
-    ss.clear();
+    //split input into R, rowNum, S, seatNum
+    
+    if (userInput.at(0) == 'R' && userInput.find("S") &&
+        (strIsNum(rowString) && strIsNum(seatString)) ) {
 
-    ss << userInput.substr(sPos + 1, userInput.size() - sPos);  //find seat
-    ss >> seatNum;
+        sPos = userInput.find("S");
+        ss << rowString; //find row
+        ss >> rowNum;   //
+        ss.clear();
 
+        ss << seatString;  //find seat
+        ss >> seatNum;  //
 
-    if (seatIsThere(seatings, maxSeats, rowNum, seatNum)) { //if seat is available
-        seatings.at(rowNum - 1).replace(seatNum-1, seatChars.size(), seatChars);
-        ticketsSold++;
-        cout << "Seat Purchased!" << endl;
+        if (seatIsThere(seatings, maxSeats, rowNum, seatNum)) { //if seat is available
+            seatings.at(rowNum - 1).replace(seatNum - 1, seatChars.size(), seatChars);
+            ticketsSold++;
+            cout << "Seat Purchased!" << endl;
+        }
     }
     else { //if no seat found/taken
         cout << "No such seat or the seat has been taken." << endl << endl;
@@ -170,6 +189,7 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
     int userCommand = 1;
     int numberOfSeats = 1;
     int rowStart;
+    double ticketPrice = 11.50;
     string userInput;
     string foundSeats;
     string searchSeat = "";
@@ -187,8 +207,6 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
         case 1: //buy a single seat
             cout << "Enter seat in R#S# format (ie. R10S25): ";
             getline(cin, userInput);
-            //TODO: validate user inputs. Catch inputs like "V10K200P"
-            
             buySeat(theater, seats, ticketsSold, userInput);
             save(theater, fileName);
             break;
@@ -208,7 +226,7 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
             }
             else {
                 cout << "Seat is found at " << foundSeats << "." << endl <<
-                    "Would you like to purchase it? [ Y(es) | N(o) ] " << endl;
+                    "Would you like to purchase it? [ Y(es) | N(o) ] ";
                 getline(cin, userInput);
 
                 if (toupper(userInput.at(0)) == 'Y') {
@@ -231,6 +249,29 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
     }
 }
 
+//Setup menu
+
+void setupMenu() {
+    /**
+    numeber of rows
+    number of seats per row
+    default seat price
+    list of special row prices
+        R, num, $, #
+    list of blocked seats
+        R15S10 R7S10 R2S3... separated by spaces (getline using space delemeter)
+    **/
+
+    cout << endl << "}}--Set Up Menu--{{" << endl <<
+        "1. Set up Wizard" << endl <<
+        "2. Change # of rows" << endl <<
+        "3. Change # of seats per row" << endl <<
+        "4. Add special row prices" << endl <<
+        "5. Add blocked seats" << endl;
+
+
+}
+
 int main() {
     //initial 
     const string FILENAME("setup.txt");
@@ -250,18 +291,20 @@ int main() {
         load(FILENAME, theater, rowsMax, seatsMax);  // import at first
     }
     else {//else: initialize
-       theater = initializeTheater(rowsMax, seatsMax);
+        theater = initializeTheater(rowsMax, seatsMax);
     }
 
     display(theater, seatsMax);
     cout << endl;
     
     while (userCommand != 0) {
+        countTix(theater,ticketsSold);
+        cout << "Total Tickets Sold: " << ticketsSold << endl;
         cout << "---<Main Menu>---" << endl <<
                 "1. Purchase Tickets" << endl <<
-                "2. Settings" << endl <<
+                "2. Set Up" << endl <<
                 "3. Display theater seats" << endl <<
-                "4. Check number of tickets sold"
+                "4. Check number of tickets sold" << endl <<
                 "0. Exit" << endl;
          
         getline(cin, userInput);
@@ -274,6 +317,7 @@ int main() {
             break;
         case 2:
             //TODO: Settings menu (by wednesday)
+            setupMenu();
             break;
         case 3:
             display(theater, seatsMax);
@@ -287,27 +331,5 @@ int main() {
         }
     }// end while
 
-
-    /**TODO 1: user can set up:
-               Number of rows
-               Number of seats per row
-               Default seat price
-               List of special row prices (1.2)
-               List of blocked seats listed entered in one line
-     **/
-
-     //TODO 3: view number of tickets sold
-     //TODO 3.1: user buys a ticket of a group of tickets
-     //TODO 3.2: ----display total ticket prices
-
-     //TODO 4: keep track of all total ticket sales
-     //TODO 4.1: #seats sold, #available seats in each row, and # of available seats in theater
-
-     //TODO 5.1: x-number of adjacent seats, the program will auto-find the seats
-     //TODO 5.2: ----AT A GIVEN ROW and find a row with the seats (going back)
-
-     //TODO 6: clear all sales
-
-     //TODO 7: exit option. must save at close and load at start
     return 0;
 }
