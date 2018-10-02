@@ -250,8 +250,31 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
 }
 
 //Setup menu
+void changeRowMax(int &currentMaxRows) {
+    string userInput;
+    int requestedRows;
+    int delta;
 
-void setupMenu() {
+    cout << "The current max amount of rows is " << currentMaxRows << "." << endl;
+    cout << "What would you like to change it to?";
+    getline(cin, userInput);
+    stringstream(userInput) >> requestedRows;
+    
+    delta = requestedRows - currentMaxRows;
+    currentMaxRows = requestedRows;
+    
+    //TODO: expand/compress theater
+}
+
+void initializeSeatPrices(vector<int> &seatPrices, int price ) {
+    for (int seatPrice : seatPrices) {
+        seatPrice = price;
+    }
+}
+
+void setupMenu(int &currentMaxRows, int &currentMaxSeats, vector<int> &rowPrices) {
+    string userInput;
+    int userCommand;
     /**
     numeber of rows
     number of seats per row
@@ -267,8 +290,44 @@ void setupMenu() {
         "2. Change # of rows" << endl <<
         "3. Change # of seats per row" << endl <<
         "4. Add special row prices" << endl <<
-        "5. Add blocked seats" << endl;
+        "5. Add blocked seats" << endl <<
+        "0. Return to Main Menu..." << endl;
+    getline(cin, userInput);
+    stringstream(userInput) >> userCommand;
 
+    switch (userCommand) {
+    case 1:
+        break;
+    case 2:
+        changeRowMax(currentMaxRows);
+        cout << "New max amount of rows: " << currentMaxRows << endl;
+        break;
+    case 3:
+        cout << "The current max amount of seats is " << currentMaxSeats << "seats." << endl;
+        cout << "What would you like to change it to?";
+        getline(cin, userInput);
+        stringstream(userInput) >> currentMaxSeats;
+
+        cout << "New max amount of seats: " << currentMaxSeats << endl;
+        break;
+    case 4:
+
+        break;
+    case 5:
+        break;
+
+    case 0:
+        cout << "Would you like to save your changes? Yes|No :";
+        getline(cin, userInput);
+
+        if (toupper(userInput.at(0)) == 'Y') {
+            //TODO: SAVE
+        }
+
+        break;
+    default:
+        break;
+    }
 
 }
 
@@ -282,6 +341,7 @@ int main() {
     int ticketsSold = 0;
     int userCommand = 1;
     vector<string> theater;
+    vector<int> rowPrices;
     ifstream fileInput(FILENAME);
     //--------
 

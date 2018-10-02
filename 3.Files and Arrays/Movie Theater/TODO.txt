@@ -20,3 +20,7 @@
         //TODO 6: clear all sales
 
         //TODO 7: exit option. must save at close and load at start
+
+3rd October 2018
+line 266: //TODO: expand/compress theater
+line 324: //TODO: SAVE
