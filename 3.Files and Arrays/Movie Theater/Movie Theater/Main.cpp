@@ -22,12 +22,14 @@ void clearTheater(vector<string> &chosen_vector) {
     chosen_vector.clear();
 }
 
-void countTix(const vector<string> &theater, int &ticketCount) {
+int countTix(const vector<string> &theater) {
+    int tix = 0;
     for (string row : theater) {
         for (char seat : row) {
-            ticketCount += seat == '*';
+            tix += seat == '*';
         }
     }
+    return tix;
 }
 
 void display(vector<string>& vect, int seatSize) {
@@ -38,6 +40,7 @@ void display(vector<string>& vect, int seatSize) {
     cout << endl;
     cout << setw(22) << right << "Seats" << endl;
 
+   // cout << seatSize << "=seatsize" << endl;    //DEBUG
     for (int i = 0; i < seatSize; i++) {
         ss << ( (i + 1)%10 ) << " ";
         ss >> temp;
@@ -45,7 +48,7 @@ void display(vector<string>& vect, int seatSize) {
     }
     cout << setw(seatSize + 8) << right << firstLine << endl;
 
-
+   // cout << vect.size() << "=vect size" << endl;  //DEBUG
     for (int i = 0; i < vect.size(); i++) {   //row count
         ss.clear();
         ss << i + 1;
@@ -95,7 +98,6 @@ vector<string> initializeTheater(int rowCount, int seats) {
     }
 
     vector<string> theater(rowCount, row); //15 rows 
-    save(theater, "setup.txt");
     return theater;
 }
 
@@ -149,7 +151,7 @@ bool strIsNum(const string &checkStr) { //check if input is number
 }
 
 void buySeat(vector<string> &seatings, int maxSeats, int &ticketsSold, const string &userInput, int numberOfSeats = 1) { //replace # with *
-    int sPos = 0;
+    int sPos = userInput.find("S");
     int seatNum;
     int rowNum;
     stringstream ss;
@@ -162,11 +164,9 @@ void buySeat(vector<string> &seatings, int maxSeats, int &ticketsSold, const str
     }
 
     //split input into R, rowNum, S, seatNum
-    
-    if (userInput.at(0) == 'R' && userInput.find("S") &&
+    if (userInput.at(0) == 'R' && sPos &&
         (strIsNum(rowString) && strIsNum(seatString)) ) {
 
-        sPos = userInput.find("S");
         ss << rowString; //find row
         ss >> rowNum;   //
         ss.clear();
@@ -250,20 +250,22 @@ void purchaseMenu(vector<string> &theater, int seats, const string &fileName, in
 }
 
 //Setup menu
-void changeRowMax(int &currentMaxRows) {
-    string userInput;
-    int requestedRows;
-    int delta;
 
-    cout << "The current max amount of rows is " << currentMaxRows << "." << endl;
-    cout << "What would you like to change it to?";
-    getline(cin, userInput);
-    stringstream(userInput) >> requestedRows;
-    
-    delta = requestedRows - currentMaxRows;
-    currentMaxRows = requestedRows;
-    
-    //TODO: expand/compress theater
+vector<string> scaleTheater(const vector<string> &initialTheater, int currentSeatMax, int newRowMax, int newSeatMax) {
+    vector<string> newTheater;
+    int size;
+    newTheater = initializeTheater(newRowMax, newSeatMax); //fill with '*'
+    display(newTheater, newSeatMax);    //DEBUG
+
+    size = (initialTheater.size() < newRowMax) ? initialTheater.size() : newRowMax;
+
+    for (int i = 0; i < size; i++) { //replace with original inputs
+        cout << newTheater.at(i) << endl;   //DEBUG
+        
+        newTheater.at(i).replace(0, newSeatMax, initialTheater.at(i)); 
+        cout << newTheater.at(i) << endl;   //DEBUG
+    }
+    return newTheater;
 }
 
 void initializeSeatPrices(vector<int> &seatPrices, int price ) {
@@ -272,9 +274,14 @@ void initializeSeatPrices(vector<int> &seatPrices, int price ) {
     }
 }
 
-void setupMenu(int &currentMaxRows, int &currentMaxSeats, vector<int> &rowPrices) {
+void setupMenu(vector<string> &theater, int &currentMaxRows, int &currentMaxSeats, vector<int> &rowPrices) {
     string userInput;
-    int userCommand;
+    vector<string> originalTheater = theater;
+    int userCommand = 1;
+    int requested;
+    int delta = 0;
+    int newRowMax = currentMaxRows;
+    int newSeatmax = currentMaxSeats;
     /**
     numeber of rows
     number of seats per row
@@ -284,51 +291,57 @@ void setupMenu(int &currentMaxRows, int &currentMaxSeats, vector<int> &rowPrices
     list of blocked seats
         R15S10 R7S10 R2S3... separated by spaces (getline using space delemeter)
     **/
-
-    cout << endl << "}}--Set Up Menu--{{" << endl <<
-        "1. Set up Wizard" << endl <<
-        "2. Change # of rows" << endl <<
-        "3. Change # of seats per row" << endl <<
-        "4. Add special row prices" << endl <<
-        "5. Add blocked seats" << endl <<
-        "0. Return to Main Menu..." << endl;
-    getline(cin, userInput);
-    stringstream(userInput) >> userCommand;
-
-    switch (userCommand) {
-    case 1:
-        break;
-    case 2:
-        changeRowMax(currentMaxRows);
-        cout << "New max amount of rows: " << currentMaxRows << endl;
-        break;
-    case 3:
-        cout << "The current max amount of seats is " << currentMaxSeats << "seats." << endl;
-        cout << "What would you like to change it to?";
+    while (userCommand != 0) {
+        cout << endl << "}}--Set Up Menu--{{" << endl <<
+            "1. Set up Wizard" << endl <<
+            "2. Change # of rows" << endl <<
+            "3. Change # of seats per row" << endl <<
+            "4. Add special row prices" << endl <<
+            "5. Add blocked seats" << endl <<
+            "0. Return to Main Menu..." << endl;
         getline(cin, userInput);
-        stringstream(userInput) >> currentMaxSeats;
+        stringstream(userInput) >> userCommand;
 
-        cout << "New max amount of seats: " << currentMaxSeats << endl;
-        break;
-    case 4:
+        switch (userCommand) {
+        case 1:
+            break;
+        case 2:
+        case 3:
+            cout << "The current max amount of " << ((userCommand == 2) ? "rows" : "seats") << " is " << ((userCommand == 2) ? currentMaxRows : currentMaxSeats) << "." << endl;
+            cout << "What would you like to change it to?";
+            getline(cin, userInput);
+            stringstream(userInput) >> requested;
 
-        break;
-    case 5:
-        break;
+            (userCommand == 2) ? newRowMax = requested : newSeatmax = requested;
 
-    case 0:
-        cout << "Would you like to save your changes? Yes|No :";
-        getline(cin, userInput);
+            theater = scaleTheater(theater, currentMaxSeats, newRowMax, newSeatmax);
+            currentMaxRows = newRowMax;
+            currentMaxSeats = newSeatmax;
 
-        if (toupper(userInput.at(0)) == 'Y') {
-            //TODO: SAVE
+            display(theater, currentMaxSeats);
+            break;
+        case 4:
+
+            break;
+        case 5:
+            break;
+
+        case 0:
+            cout << "Would you like to save your changes? Yes|No :";
+            getline(cin, userInput);
+
+            if (toupper(userInput.at(0)) == 'Y') {
+                //TODO: SAVE
+            }
+            else {
+                theater = originalTheater;  //IMPROVE
+            }
+
+            break;
+        default:
+            break;
         }
-
-        break;
-    default:
-        break;
     }
-
 }
 
 int main() {
@@ -352,13 +365,14 @@ int main() {
     }
     else {//else: initialize
         theater = initializeTheater(rowsMax, seatsMax);
+        save(theater, "setup.txt");
     }
 
     display(theater, seatsMax);
     cout << endl;
     
     while (userCommand != 0) {
-        countTix(theater,ticketsSold);
+        ticketsSold = countTix(theater);
         cout << "Total Tickets Sold: " << ticketsSold << endl;
         cout << "---<Main Menu>---" << endl <<
                 "1. Purchase Tickets" << endl <<
@@ -377,7 +391,7 @@ int main() {
             break;
         case 2:
             //TODO: Settings menu (by wednesday)
-            setupMenu();
+            setupMenu(theater,rowsMax,seatsMax, rowPrices);
             break;
         case 3:
             display(theater, seatsMax);

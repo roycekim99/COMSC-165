@@ -24,3 +24,9 @@
 3rd October 2018
 line 266: //TODO: expand/compress theater
 line 324: //TODO: SAVE
+
+4th October 2018
+Must fix compressing/expand
+	replaces last x-amount and compresses to save file's amount
+save function @end of setup
+Must add purchase prices
