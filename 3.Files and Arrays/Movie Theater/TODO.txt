@@ -33,3 +33,7 @@ Must add purchase prices
 
 4th October 2018
 Must save and load prices. setup.txt must include default price and special row prices.
+
+5th October 2018
+add seats available in each row
+add seats available in entire theater
