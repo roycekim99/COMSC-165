@@ -1,14 +1,14 @@
 ﻿  Main.cpp
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(61): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(104): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(144): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(179): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(205): warning C4018: '<=': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(202): warning C4101: 'seatChar': unreferenced local variable
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(322): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(336): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(349): warning C4018: '>': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(361): warning C4101: 'priceNum': unreferenced local variable
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(396): warning C4018: '<': signed/unsigned mismatch
-c:\users\royce work\documents\dvc code-2018summer\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(429): warning C4018: '<': signed/unsigned mismatch
-  Movie Theater.vcxproj -> C:\Users\Royce Work\Documents\DVC Code-2018Summer\COMSC-165\3.Files and Arrays\Movie Theater\Debug\Movie Theater.exe
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(63): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(114): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(157): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(196): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(223): warning C4018: '<=': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(220): warning C4101: 'seatChar': unreferenced local variable
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(350): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(370): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(421): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(424): warning C4018: '>': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(454): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(492): warning C4018: '<': signed/unsigned mismatch
+  Movie Theater.vcxproj -> C:\Users\Cheeto\Documents\1 CODES\DVC\COMSC-165\3.Files and Arrays\Movie Theater\Debug\Movie Theater.exe
