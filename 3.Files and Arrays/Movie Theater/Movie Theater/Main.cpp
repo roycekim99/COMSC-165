@@ -44,7 +44,7 @@ int countTix(const vector<string> &theater) {
     return tix;
 }
 
-void display(vector<string> &vect, int seatSize, vector<string> prices){
+void display(const vector<string> &vect, int seatSize, vector<string> prices){
     string firstLine = "";
     string temp;
     stringstream ss;
@@ -812,6 +812,43 @@ void setupMenu(vector<string> &theater, int &currentMaxRows,
     }
 }
 
+//3. View availble seats
+void viewAvailable(const vector<string> &theater,
+                   const int &maxSeats, 
+                   const vector<string> &priceList) {
+    string temp;
+    stringstream ss;
+    int seatsTotal = 0;
+    int count = 0;
+    vector<int> availableSeatCount(theater.size());
+
+    system("cls");
+
+    //calculate available seats
+    for (int i = 0; i < theater.size(); i++) {  
+        for (char seat : theater.at(i)) {
+            count += (seat == '#');
+            seatsTotal += (seat == '#');
+
+        }
+        availableSeatCount.at(i) = count;
+        count = 0;
+    }
+
+    for (int i = 0; i < theater.size(); i++) {
+        ss << (i + 1);
+        ss >> temp;
+        temp = "row " + temp;
+
+        cout << setw(7) << left << temp << " " <<
+            left << availableSeatCount.at(i) <<
+            "Seats" << endl;
+        ss.clear();
+    }
+    cout << "Total Seats Available: " << seatsTotal << endl;
+    system("pause");
+}
+
 //MAIN MENU
 int main() {
     //initial 
@@ -856,6 +893,7 @@ int main() {
         cout << "---<Main Menu>---" << endl <<
                 "1. Purchase Tickets" << endl <<
                 "2. Set Up" << endl <<
+                "3. Veiw Available Seats" << endl <<
                 "0. Exit" << endl;
          
         getline(cin, userInput);
@@ -871,6 +909,9 @@ int main() {
         case 2:
             system("cls");
             setupMenu(theater,rowsMax,seatsMax, rowPrices, DEFAULTPRICE);
+            break;
+        case 3:
+            viewAvailable(theater, seatsMax, rowPrices);
             break;
         case 0://avoid default prompt
             break;

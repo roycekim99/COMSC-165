@@ -11,4 +11,6 @@ c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater
 c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(424): warning C4018: '>': signed/unsigned mismatch
 c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(454): warning C4018: '<': signed/unsigned mismatch
 c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(492): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(825): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\3.files and arrays\movie theater\movie theater\main.cpp(835): warning C4018: '<': signed/unsigned mismatch
   Movie Theater.vcxproj -> C:\Users\Cheeto\Documents\1 CODES\DVC\COMSC-165\3.Files and Arrays\Movie Theater\Debug\Movie Theater.exe
