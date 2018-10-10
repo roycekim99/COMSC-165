@@ -842,7 +842,7 @@ void viewAvailable(const vector<string> &theater,
 
         cout << setw(7) << left << temp << " " <<
             left << availableSeatCount.at(i) <<
-            "Seats" << endl;
+            " Seats" << endl;
         ss.clear();
     }
     cout << "Total Seats Available: " << seatsTotal << endl;
