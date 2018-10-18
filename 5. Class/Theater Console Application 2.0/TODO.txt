@@ -1,0 +1,18 @@
+1. UI: mouse click info
+    a. check if you can get a value at clicked point
+    b. check if you can move console cursor position
+        i. display theater with offset
+    c. check if you can get mouse click action
+
+2. make seat class
+    a. contains seat's description.
+    b. contains set's position at given row.
+
+3. make Theater class
+    a. contains a vector of seats
+    b. set console foreground color
+    c. set console background color
+    d. get Theater's name
+    e. get Theater's size
+    f. get Theater's available seats, blocked seats
+    g. display seat address on right of menu
