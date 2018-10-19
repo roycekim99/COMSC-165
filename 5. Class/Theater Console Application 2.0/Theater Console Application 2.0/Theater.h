@@ -1,107 +1,102 @@
 #ifndef THEATER_H
 #define THEATER_H
 
-#include <Windows.h>
+#include "Rows.h"
 #include <vector>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
 
-const char AVAILABLE = '#';
-const char TAKEN = '-';
-const char BLOCKED = 'X';
-const int ROWS_DEFAULT = 10;    //number of rows in theater
-const int SEATS_DEFAULT = 5;    //number of seats per row
-const int BLOCKED_COLOR = 12;   //red text black bg
+const int ROWS_DEFAULT = 5;    //number of rows in theater
+const int SEATS_DEFAULT = 10;    //number of seats per row
 
-inline void ConsoleTextColor(int style) {
-    SetConsoleTextAttribute( GetStdHandle(STD_OUTPUT_HANDLE), style );
-}
-
-struct Row {
+class Theater{
 private:
-    std::string content;
-    
-public:
-
-    Row(int seats) {//constructor
-        for (int i = 0; i < seats; ++i) {
-            content.push_back(AVAILABLE);
-        }
-    }
-
-    //get length of row (number of seats at row)
-    int size() {  
-        return content.size();
-    }
-
-    void updateSeat(int seatNumber, int status) {
-        char newStatus = '#';
-
-        switch (status) {
-        case 1:
-            newStatus = TAKEN;
-            break;
-        case 2:
-            newStatus = BLOCKED;
-            break;
-        default:
-            break;
-        }
-
-        content.replace(seatNumber - 1, 1, 1, newStatus);
-    }
-
-    char getStatusAt(int seatNum) {
-        return content.at(seatNum - 1);
-    }
-
-    
-};
-
-
-class Theater {
-private:
-    std::vector <Row> theater;
-    std::string name;
+    vector <Row> theater;
+    string name;
 
 public:
-    
-    Theater(std::string name = "Untitled", int rows = ROWS_DEFAULT, int seats = SEATS_DEFAULT) {   //initilaize theater 
+    //constructor
+    Theater(string name = "Untitled", int rows = ROWS_DEFAULT, int seats = SEATS_DEFAULT) {
         this->name = name;
-        theater.resize(rows);
 
         for (int i = 0; i < rows; ++i) {
             Row temp(seats);
             theater.push_back(temp);
         }
+
     }
 
-    //***********************************************************************
-
-    void rename(string newName) {
-        name = newName;
-    }
-
-    int getRows() {
+    //::return size of theater
+    int size() {
         return theater.size();
     }
 
+    //::return max number of seats at given row (should be equal at all seats)
     int getSeatMaxAtRow(int rowNum) {
         return ( (rowNum < theater.size() && rowNum)? theater.at(rowNum).size() : -1 );
     }
 
-    void scaleAndReplace(int newRows, int newSeatMax, bool replace = true) {
+    //::update a seat
+    bool updateSeat(int row, int seat, char status) {
+        bool success = (row >= 0 && row <= theater.size()) &&
+            (seat >= 0 && seat <= getSeatMaxAtRow(row));
 
-        Theater temp(name,newRows, newSeatMax);
+        //validate inputs
+        if (success) {
+            theater.at(row).updateSeat(seat, status);
+        }
+        return success;
+    }
 
-        for (int r = 0; r < newRows; ++r) {
-            for (int s = 0; s < newSeatMax; ++s) {
-                
+    //::resize theater without losing current status
+    void resize(int newRows, int newSeatMax, bool replace = true) {
+        //decide which size is smaller
+        int maxRows = (theater.size() > newRows) ? newRows : theater.size();
+        int maxSeats = (getSeatMaxAtRow(1) > newSeatMax) ? newSeatMax : getSeatMaxAtRow(1);
+
+        //fill newtemp Theater object with available seats
+        Theater tempTheater(name, maxRows, maxSeats);
+
+        //update new theater with old data
+        if (replace) {
+            for (int r = 0; r < maxRows; ++r) {
+                for (int s = 0; s < maxSeats; ++s) {
+                    tempTheater.updateSeat(r, s, theater.at(r).getStatusAt(s));
+                }
             }
         }
+        //update current vector with new vector
+        this->theater = tempTheater.theater;
+    }
 
+    //::rename current theater
+    void rename(string newName) {
+        name = newName;
+    }
+
+    //::get Row
+    Row &getRow(int r) {
+        return theater.at(r-1);
+    }
+
+    //::set price of rows in theater
+    void setPrice(const string& newPrice) {
+        for (Row r : theater) {
+            r.setPrice(newPrice);
+        }
+    }
+
+    //::get prices
+
+    //::OVERRIDE << operator
+    friend ostream& operator<< (ostream &strm, const Theater& theaterObject) {
+        for (Row r: theaterObject.theater) {
+            strm << r << endl;
+        }
+        return strm;
     }
 
 };
 
-
 #endif // !THEATER_H
-

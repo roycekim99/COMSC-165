@@ -23,5 +23,8 @@
     <ClInclude Include="Theater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Rows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

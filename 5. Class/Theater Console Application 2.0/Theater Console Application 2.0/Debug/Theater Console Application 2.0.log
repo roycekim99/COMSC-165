@@ -1,2 +1,5 @@
 ﻿  Main.cpp
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\5. class\theater console application 2.0\theater console application 2.0\theater.h(37): warning C4018: '<': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\5. class\theater console application 2.0\theater console application 2.0\theater.h(42): warning C4018: '<=': signed/unsigned mismatch
+c:\users\cheeto\documents\1 codes\dvc\comsc-165\5. class\theater console application 2.0\theater console application 2.0\theater.h(55): warning C4018: '>': signed/unsigned mismatch
   Theater Console Application 2.0.vcxproj -> C:\Users\Cheeto\Documents\1 CODES\DVC\COMSC-165\5. Class\Theater Console Application 2.0\Debug\Theater Console Application 2.0.exe
