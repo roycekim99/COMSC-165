@@ -6,14 +6,16 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 
 const int ROWS_DEFAULT = 5;    //number of rows in theater
 const int SEATS_DEFAULT = 10;    //number of seats per row
 
-class Theater{
+class Theater {
 private:
     vector <Row> theater;
     string name;
+
 
 public:
     //constructor
@@ -27,6 +29,60 @@ public:
 
     }
 
+    //::load from file
+    bool load(const string& fileName) {
+        string buffer;
+        ifstream inputFile(fileName);
+        int splitPos = 0;
+        Row temp;
+
+        if (inputFile) {
+            theater.clear();
+
+            getline(inputFile, buffer);
+            name = buffer;
+
+            getline(inputFile, buffer);
+            splitPos = buffer.find('$');
+            temp = Row(buffer.substr(0, splitPos),
+                       buffer.substr(splitPos + 1, (buffer.size() - (splitPos))));
+            theater.push_back(temp);
+
+            while (getline(inputFile, buffer)) {
+                temp = Row(buffer.substr(0, splitPos),
+                           buffer.substr(splitPos + 1, (buffer.size() - (splitPos))));
+                theater.push_back(temp);
+            }
+            inputFile.close();
+            return 1;
+        }
+        else {
+            inputFile.close();
+            return 0;
+        }
+
+    }
+
+    //::save to file
+    bool save(const string& fileName) {
+        ofstream outputFile(fileName);
+
+        if (outputFile) {
+            outputFile << name << endl;
+            for (Row r : theater) {
+                outputFile << r.info() << "$" << r.getPrice() << endl;
+            }
+
+            outputFile.close();
+            return 1;
+        }
+        else {
+            outputFile.close();
+            return 0;
+        }
+    }
+    
+
     //::return size of theater
     int size() {
         return theater.size();
@@ -34,17 +90,18 @@ public:
 
     //::return max number of seats at given row (should be equal at all seats)
     int getSeatMaxAtRow(int rowNum) {
-        return ( (rowNum < theater.size() && rowNum)? theater.at(rowNum).size() : -1 );
+        return ((rowNum < theater.size() && rowNum) ? theater.at(rowNum).size() : -1);
     }
 
     //::update a seat
-    bool updateSeat(int row, int seat, char status) {
-        bool success = (row >= 0 && row <= theater.size()) &&
-            (seat >= 0 && seat <= getSeatMaxAtRow(row));
+    bool updateSeat(int row, int seat, Status s) {
+        bool success = (row > 0 && row <= theater.size()) &&
+            (seat > 0 && seat <= getSeatMaxAtRow(row));
 
         //validate inputs
         if (success) {
-            theater.at(row).updateSeat(seat, status);
+
+            theater.at(row - 1).updateSeat(seat, s);
         }
         return success;
     }
@@ -60,14 +117,15 @@ public:
 
         //update new theater with old data
         if (replace) {
-            for (int r = 0; r < maxRows; ++r) {
-                for (int s = 0; s < maxSeats; ++s) {
-                    tempTheater.updateSeat(r, s, theater.at(r).getStatusAt(s));
+            for (int r = 1; r <= maxRows; ++r) {
+                for (int s = 1; s <= maxSeats; ++s) {
+                    tempTheater.updateSeat(r, s, theater.at(r - 1).getStatusAt(s));
+                    tempTheater.setPrice(r, theater.at(r - 1).getPrice());
                 }
             }
         }
         //update current vector with new vector
-        this->theater = tempTheater.theater;
+        theater = tempTheater.theater;
     }
 
     //::rename current theater
@@ -75,28 +133,86 @@ public:
         name = newName;
     }
 
+    //::return name of theater
+    string getName() {
+        return name;
+    }
+
     //::get Row
-    Row &getRow(int r) {
-        return theater.at(r-1);
+    Row getRow(int r) {
+        return theater.at(r - 1);
     }
 
     //::set price of rows in theater
+    //::::OF ALL ROWS
     void setPrice(const string& newPrice) {
-        for (Row r : theater) {
+        for (Row &r : theater) {
             r.setPrice(newPrice);
         }
     }
+    //::::OF SINGLE ROW
+    void setPrice(int row, const string& newPrice) {
+        theater.at(row - 1).setPrice(newPrice);
+    }
 
     //::get prices
+    string getPrice(int rowNum) {
+        return theater.at(rowNum-1).getPrice();
+    }
+    
+    //::find seat from a row
+    string findSeats(int numberOfSeatsRequestd = 1, int rowStart = 1, bool oneLine = false) {
+        int foundSeat = 0;
+        int foundRow = 0;
+        string finalOutput = "Not Found";
+        stringstream ss;
+
+        
+        for (int i = rowStart-1; (oneLine)? 
+            (i < theater.size()) : (i<rowStart) &&
+             !foundSeat ; ++i) {
+            foundSeat = theater.at(i).findSeatNumber(numberOfSeatsRequestd);
+            if (foundSeat) {
+                foundRow = i+1;
+                ss << "R" << foundRow << "S" << foundSeat;
+            }
+        }
+
+        ss >> finalOutput;
+        
+        return finalOutput;
+    }
+
+    //::calculate total price of theater
+    string calculateTotalPrice() {
+        double price = 0.0;
+        double totalPrice = 0.0;
+        stringstream converterStream;
+        string buffer;
+        char dum = ' ';
+
+        for (Row r : theater) {
+            //findprice
+            converterStream << r.getPrice();
+            converterStream >> price;
+            cout << price << ":" << r.getPrice() << endl;  //debug
+            totalPrice += (r.soldSeats() * price);
+            
+            converterStream.str("");
+        }
+
+        converterStream << totalPrice;
+        converterStream >> buffer;
+        return buffer;
+    }
 
     //::OVERRIDE << operator
     friend ostream& operator<< (ostream &strm, const Theater& theaterObject) {
-        for (Row r: theaterObject.theater) {
+        for (Row r : theaterObject.theater) {
             strm << r << endl;
         }
         return strm;
     }
 
 };
-
 #endif // !THEATER_H

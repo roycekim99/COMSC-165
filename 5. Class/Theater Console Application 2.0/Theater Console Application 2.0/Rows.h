@@ -6,9 +6,12 @@
 using namespace std;
 
 const string PRICE_DEFAULT = "11.00";
-const char AVAILABLE = '#';
-const char TAKEN = '-';
-const char BLOCKED = 'X';
+enum class Status : char{
+    AVAILABLE = '#',
+    TAKEN = '*',
+    BLOCKED = 'X'
+};
+
 
 //contains row information, including price
 class Row {
@@ -22,8 +25,24 @@ public:
         price = p;
 
         for (int i = 0; i < seats; ++i) {
-            givenRow.push_back(AVAILABLE);
+            givenRow.push_back(static_cast<char>(Status::AVAILABLE) );
         }
+    }
+
+    Row(const string& inputString, string p = PRICE_DEFAULT) {
+        givenRow = inputString;
+        price = p;
+    }
+
+    //::get number of sold seats
+    int soldSeats() {
+        int count = 0;
+
+        for (char s : givenRow) {
+            count += (s == static_cast<char>(Status::TAKEN));
+        }
+
+        return count;
     }
 
     //::get max number of seats per row
@@ -32,32 +51,29 @@ public:
     }
 
     //::set status at given seat number
-    //TODO: let user pick enum
-    void updateSeat(int seatNumber, char status) {
-        //probably better to use enum.
-        char newStatus = '#';
+    void updateSeat(int seatNumber, Status s) {
+        givenRow.replace(seatNumber - 1, 1, 1, static_cast<char>(s));
+    }
 
-        switch (toupper(status)) {
-        case '-':
-            newStatus = TAKEN;
-            break;
+    //::get status at given seat number
+    Status getStatusAt(int seatNum) {
+        Status stat = Status::AVAILABLE;
+
+        switch (givenRow.at(seatNum - 1)) {
         case 'X':
-            newStatus = BLOCKED;
+            stat = Status::BLOCKED;
+            break;
+        case '-':
+            stat = Status::TAKEN;
             break;
         default:
             break;
         }
-
-        givenRow.replace(seatNumber - 1, 1, 1, newStatus);
-    }
-
-    //::get status at given seat number
-    char getStatusAt(int seatNum) {
-        return givenRow.at(seatNum - 1);
+        return stat;
     }
 
     //::get "givenRow"
-    string getRow() {
+    string info() {
         return givenRow;
     }
 
@@ -69,6 +85,19 @@ public:
     //::set price of row
     void setPrice(const string& p) {
         price = p;
+    }
+
+    //::find available seat
+    int findSeatNumber(int numberOfSeatsRequested = 1) {
+        string requestedChars;
+        int position = 0;
+
+        for (int i = 1; i <= numberOfSeatsRequested; ++i) {
+            requestedChars += static_cast<char>(Status::AVAILABLE);
+        }
+        position = givenRow.find_first_of(requestedChars) + 1;
+        
+        return (position);
     }
 
     //::OVERRIDE << operator
