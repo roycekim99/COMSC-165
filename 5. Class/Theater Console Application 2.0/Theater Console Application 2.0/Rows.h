@@ -2,7 +2,6 @@
 #define ROWS_H
 
 #include <string>
-
 using namespace std;
 
 const string PRICE_DEFAULT = "11.00";
@@ -60,10 +59,10 @@ public:
         Status stat = Status::AVAILABLE;
 
         switch (givenRow.at(seatNum - 1)) {
-        case 'X':
+        case (static_cast<char>(Status::BLOCKED)):
             stat = Status::BLOCKED;
             break;
-        case '-':
+        case (static_cast<char>(Status::TAKEN)):
             stat = Status::TAKEN;
             break;
         default:
@@ -83,21 +82,27 @@ public:
     }
 
     //::set price of row
-    void setPrice(const string& p) {
-        price = p;
+    void setPrice(const string& p, bool isSpecial = false) {
+        price = p + ( (isSpecial)? "*" : "");
     }
 
     //::find available seat
     int findSeatNumber(int numberOfSeatsRequested = 1) {
-        string requestedChars;
+        string requestedChars = "";
         int position = 0;
 
         for (int i = 1; i <= numberOfSeatsRequested; ++i) {
             requestedChars += static_cast<char>(Status::AVAILABLE);
         }
-        position = givenRow.find_first_of(requestedChars) + 1;
         
+        position = givenRow.find(requestedChars);
+
         return (position);
+    }
+
+    //::get if row price is special
+    bool isSpecial() {
+        return (price.find('*') == (price.size()-1));
     }
 
     //::OVERRIDE << operator

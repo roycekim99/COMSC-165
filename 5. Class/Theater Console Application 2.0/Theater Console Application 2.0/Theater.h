@@ -90,42 +90,45 @@ public:
 
     //::return max number of seats at given row (should be equal at all seats)
     int getSeatMaxAtRow(int rowNum) {
-        return ((rowNum < theater.size() && rowNum) ? theater.at(rowNum).size() : -1);
+        return ((rowNum < theater.size() && rowNum>=0) ? theater.at(rowNum).size() : -1);
     }
 
     //::update a seat
     bool updateSeat(int row, int seat, Status s) {
-        bool success = (row > 0 && row <= theater.size()) &&
-            (seat > 0 && seat <= getSeatMaxAtRow(row));
+        
+        bool success = ( (row > 0 && row <= theater.size()) &&
+            (seat > 0 && seat <= getSeatMaxAtRow(row-1)) );
 
         //validate inputs
         if (success) {
-
             theater.at(row - 1).updateSeat(seat, s);
         }
+        
         return success;
     }
 
     //::resize theater without losing current status
-    void resize(int newRows, int newSeatMax, bool replace = true) {
+    Theater resize(int newRows, int newSeatMax, bool replace = true) {
         //decide which size is smaller
         int maxRows = (theater.size() > newRows) ? newRows : theater.size();
         int maxSeats = (getSeatMaxAtRow(1) > newSeatMax) ? newSeatMax : getSeatMaxAtRow(1);
 
         //fill newtemp Theater object with available seats
-        Theater tempTheater(name, maxRows, maxSeats);
+        Theater tempTheater(name, newRows, newSeatMax);
 
         //update new theater with old data
         if (replace) {
             for (int r = 1; r <= maxRows; ++r) {
                 for (int s = 1; s <= maxSeats; ++s) {
+                    //set status of each seat in row
                     tempTheater.updateSeat(r, s, theater.at(r - 1).getStatusAt(s));
+                    //set price of seats in row
                     tempTheater.setPrice(r, theater.at(r - 1).getPrice());
                 }
             }
         }
         //update current vector with new vector
-        theater = tempTheater.theater;
+        return tempTheater;
     }
 
     //::rename current theater
@@ -145,14 +148,18 @@ public:
 
     //::set price of rows in theater
     //::::OF ALL ROWS
-    void setPrice(const string& newPrice) {
+    void setPrice(const string& newPrice, bool replace = false) {
+        //replace all non special prices
         for (Row &r : theater) {
-            r.setPrice(newPrice);
+            if (!r.isSpecial() || !replace) {
+                r.setPrice(newPrice);
+            }
+            
         }
     }
     //::::OF SINGLE ROW
-    void setPrice(int row, const string& newPrice) {
-        theater.at(row - 1).setPrice(newPrice);
+    void setPrice(int row, const string& newPrice, bool isSpecial = false) {
+        theater.at(row - 1).setPrice(newPrice, isSpecial);        
     }
 
     //::get prices
@@ -162,23 +169,28 @@ public:
     
     //::find seat from a row
     string findSeats(int numberOfSeatsRequestd = 1, int rowStart = 1, bool oneLine = false) {
+        bool found = false;
         int foundSeat = 0;
         int foundRow = 0;
         string finalOutput = "Not Found";
         stringstream ss;
 
-        
-        for (int i = rowStart-1; (oneLine)? 
-            (i < theater.size()) : (i<rowStart) &&
-             !foundSeat ; ++i) {
-            foundSeat = theater.at(i).findSeatNumber(numberOfSeatsRequestd);
-            if (foundSeat) {
-                foundRow = i+1;
-                ss << "R" << foundRow << "S" << foundSeat;
-            }
-        }
+        if ( (rowStart > 0 && rowStart <= theater.size() )&& (numberOfSeatsRequestd >= 0 && numberOfSeatsRequestd <= theater.at(0).size()) ) {
+            for (int i = rowStart - 1;( (oneLine) ?
+                  (i = rowStart) : i < theater.size() )  &&
+                   !found; ++i) {
 
-        ss >> finalOutput;
+                foundSeat = theater.at(i).findSeatNumber(numberOfSeatsRequestd);
+
+                if (foundSeat >= 0) {
+                    found = true;
+                    foundRow = i + 1;
+                    ss << "R" << foundRow << "S" << foundSeat;
+                }
+            }
+
+            ss >> finalOutput;
+        }
         
         return finalOutput;
     }
@@ -204,6 +216,18 @@ public:
         converterStream << totalPrice;
         converterStream >> buffer;
         return buffer;
+    }
+
+    //::clear theater to default
+    void clear() {
+        theater.clear();
+    }
+
+    //::OVEERRIDE = operator
+    void operator= (const Theater& rightTheater) {
+        name = rightTheater.name;
+        theater = rightTheater.theater;
+        
     }
 
     //::OVERRIDE << operator
